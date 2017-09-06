@@ -45,7 +45,7 @@ or eax, 0x00000001;
 mov cr0, eax;
 
 jmp dword SELECTOR_CODE:p_mode_start
-
+;-----------------------------------------保护模式下print一下,证明几个段选择子没问题!---------
 [bits 32]
 p_mode_start:
 mov ax, SELECTOR_DATA
@@ -56,6 +56,21 @@ mov esp, 0x9000
 mov ax, SELECTOR_VIDEO
 mov gs, ax
 mov byte [gs:30], 'P'
+;-----------------------------------------开始初始化页目录---------------------------
+;----------和书里一样吧,把页目录放到0x100000
+mov ecx, 4096;
+mov esi, 0;
+clear_page_dic:
+mov byte [0x100000 + esi], 0
+inc esi;
+loop clear_page_dic;
+mov eax, 0x101000;
+or eax, PG_US_U | PG_RW_W | PG_P
+mov [0x100000], eax; 第一条页目录项纪录
+mov [0x100000 + 0xc00], eax; 第768页目录项纪录
+sub eax, 0x1000;把最后一个也目录项指回页目录项本身(高十位和中十位全为F则指到页目录项本身物理地址)
+mov [0x100000 + 0x3ff], eax;
+
 jmp $
 
 

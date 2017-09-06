@@ -30,3 +30,11 @@ RPL3 equ 11b
 
 TI_GDT equ 000b
 TI_LDT equ 100b
+
+
+;------------------页使用的宏----------------
+PG_US_U equ 000b
+PG_US_S equ 100b
+PG_RW_R equ 00b
+PG_RW_W equ 10b
+PG_P equ 1b
