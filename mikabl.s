@@ -71,6 +71,41 @@ mov [0x100000 + 0xc00], eax; 第768页目录项纪录
 sub eax, 0x1000;把最后一个也目录项指回页目录项本身(高十位和中十位全为F则指到页目录项本身物理地址)
 mov [0x100000 + 0x3ff], eax;
 
+;------------------------------------------创建页表项(只有第一个页表的前256项,即最低的1M)----------------------------
+mov eax, 0x101000;
+mov ebx, PG_US_U|PG_RW_W|PG_P;
+mov ecx, 256;
+mov esi, 0;
+create_PTE:
+mov [eax + esi*4], ebx;
+add ebx, 4096;
+inc esi;
+loop create_PTE;
+
+;-------------------------------------------第769项目到1022项
+mov eax, 0x102000;
+mov ebx, 0x100000;
+mov esi, 769; 
+mov ecx, 254;
+or eax,  PG_US_U | PG_RW_W | PG_P
+entry_PDT:
+mov [ebx + esi*4], eax;
+add eax, 0x1000;
+inc esi;
+loop entry_PDT
+;-------------------------------------------将段描述符的基址改为当前地址+0xc0000000------------------
+add dword [gdt_ptr + 2], 0xc0000000
+add esp, 0xc0000000
+;-------------------------------------------启动分页---------------------
+mov eax, 0x100000;
+mov cr3, eax;
+
+mov eax, cr0;
+or eax, 0x80000000
+mov cr0, eax;
+lgdt [gdt_ptr]
+
+mov byte [gs:32], 'V'
 jmp $
 
 
