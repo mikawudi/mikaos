@@ -1,1 +1,3 @@
 dd if=/mnt/d/MikaOS/mikambr of=/mnt/d/MikaOS/mika.img bs=512 count=1 conv=notrunc
+
+nasm -f bin ./mikabl.s -o ./mikabl/d/MikaOS/mika.img bs=512 count

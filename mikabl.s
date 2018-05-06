@@ -106,6 +106,63 @@ mov cr0, eax;
 lgdt [gdt_ptr]
 
 mov byte [gs:32], 'V'
+;-------------------------------------------获取内核程序地址-------------------
+KERNAL_BASE_ADDR equ 0xc000b000
+mov ax, SELECTOR_DATA
+mov ds, ax
+;-------------------------------------------读取一下elfheader的magicnumber,确保装载成功-------
+mov bh, [KERNAL_BASE_ADDR + 1]
+mov  [gs:32], bh
+mov bh, [KERNAL_BASE_ADDR + 2]
+mov  [gs:34], bh
+mov bh, [KERNAL_BASE_ADDR + 3]
+mov  [gs:36], bh
+
+call kernel_init
+mov esp, 0xc009f000
+jmp 0x1500
+;----------------------找程序头表,确定程序头在文件内的偏移e_phoff,找程序头表每个entry的size(e_phentsize),最后找程序头表的size(e_phnum),以及e_entry-------------------
+PT_NULL equ 0x00000000
+kernel_init:
+xor eax, eax;
+xor ebx, ebx;
+xor ecx, ecx;
+xor edx, edx;
+
+mov edx, [KERNAL_BASE_ADDR + 42]; e_phentsize
+mov ebx, [KERNAL_BASE_ADDR + 28]; e_phoff
+add ebx, KERNAL_BASE_ADDR
+mov cx,  [KERNAL_BASE_ADDR + 44]; e_phnum, cx作为loop数使用
+
+.each_segment:
+cmp byte [ebx], PT_NULL
+je .PTNULL
+push dword [ebx + 16]
+mov eax, [ebx + 4]
+add eax, KERNAL_BASE_ADDR
+push eax
+push dword [ebx + 8]
+call mem_cpy
+add esp, 12
+
+
+.PTNULL:
+add ebx, edx
+loop .each_segment
+ret
+
+mem_cpy:
+push ebp
+mov ebp, esp
+push ecx
+mov edi, [ebp + 8]
+mov esi, [ebp + 12]
+mov ecx, [ebp + 16]
+rep movsb
+pop ecx
+pop ebp
+ret
+;----------------------程序头表中的每一项,做解析,解析Type,找到段在文件内的偏移,段在内存的起始地址,段大小---------------
 jmp $
 
 
