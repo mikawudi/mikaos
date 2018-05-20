@@ -1,0 +1,57 @@
+[bits 32]
+%define HAS_ERROR_CODE nop
+%define NO_ERROR_CODE  push 0
+
+extern printstr;
+section .data
+intr_str db "interrtupt occur!", 0x0a, 0x00
+global func_table
+func_table:
+%macro VECT 2
+section .text
+funcentry%1:
+  %2 ; 填充errorcode
+  push intr_str
+  call printstr
+  add esp, 4; 清调用栈
+  out 0xa0, al
+  out 0x20, al
+  add esp, 4; 清error_code
+  iret; 中断返回
+section .data
+  dd funcentry%1
+%endmacro
+
+VECT 0x00, NO_ERROR_CODE
+VECT 0x01, NO_ERROR_CODE
+VECT 0x02, NO_ERROR_CODE
+VECT 0x03, NO_ERROR_CODE
+VECT 0x04, NO_ERROR_CODE
+VECT 0x05, NO_ERROR_CODE
+VECT 0x06, NO_ERROR_CODE
+VECT 0x07, NO_ERROR_CODE
+VECT 0x08, NO_ERROR_CODE
+VECT 0x09, NO_ERROR_CODE
+VECT 0x0a, NO_ERROR_CODE
+VECT 0x0b, NO_ERROR_CODE
+VECT 0x0c, NO_ERROR_CODE
+VECT 0x0d, NO_ERROR_CODE
+VECT 0x0e, NO_ERROR_CODE
+VECT 0x0f, NO_ERROR_CODE
+VECT 0x10, NO_ERROR_CODE
+VECT 0x11, NO_ERROR_CODE
+VECT 0x12, NO_ERROR_CODE
+VECT 0x13, NO_ERROR_CODE
+VECT 0x14, NO_ERROR_CODE
+VECT 0x15, NO_ERROR_CODE
+VECT 0x16, NO_ERROR_CODE
+VECT 0x17, NO_ERROR_CODE
+VECT 0x18, NO_ERROR_CODE
+VECT 0x19, NO_ERROR_CODE
+VECT 0x1a, NO_ERROR_CODE
+VECT 0x1b, NO_ERROR_CODE
+VECT 0x1c, NO_ERROR_CODE
+VECT 0x1d, NO_ERROR_CODE
+VECT 0x1e, HAS_ERROR_CODE
+VECT 0x1f, NO_ERROR_CODE
+VECT 0x20, NO_ERROR_CODE
