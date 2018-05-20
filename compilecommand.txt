@@ -1,3 +1,8 @@
 dd if=/mnt/d/MikaOS/mikambr of=/mnt/d/MikaOS/mika.img bs=512 count=1 conv=notrunc
 
 nasm -f bin ./mikabl.s -o ./mikabl/d/MikaOS/mika.img bs=512 count
+
+nasm -f elf ./kernel/interruption.s -o ./kernel/interruption.bin
+nasm -f elf ./kernel/print.s -o ./kernel/print.o
+gcc -c -fno-builtin -m32 -o ./kernel/test.bin ./kernel/main.c
+ld -Ttext 0xc0001500 -m elf_i386 -e main -o ./kernel/kernel.bin ./kernel/test.bin ./kernel/print.o ./kernel/interruption.bin
