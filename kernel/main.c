@@ -17,6 +17,7 @@ static void idt_desc_init(void);
 void idt_init();
 int main(void) {
     printstr("into kernel!\nhellow mika!");
+    idt_init();
     while(1);
 }
 void printstr(uint8_t* str) {
