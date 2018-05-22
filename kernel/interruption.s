@@ -14,6 +14,7 @@ funcentry%1:
   push intr_str
   call printstr
   add esp, 4; 清调用栈
+  mov al, 0x20
   out 0xa0, al
   out 0x20, al
   add esp, 4; 清error_code
