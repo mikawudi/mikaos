@@ -124,12 +124,12 @@ jmp 0x1500
 ;----------------------找程序头表,确定程序头在文件内的偏移e_phoff,找程序头表每个entry的size(e_phentsize),最后找程序头表的size(e_phnum),以及e_entry-------------------
 PT_NULL equ 0x00000000
 kernel_init:
-xor eax, eax;
+xor eax, eax; 0x9339
 xor ebx, ebx;
 xor ecx, ecx;
 xor edx, edx;
 
-mov edx, [KERNAL_BASE_ADDR + 42]; e_phentsize
+mov dx, [KERNAL_BASE_ADDR + 42]; e_phentsize
 mov ebx, [KERNAL_BASE_ADDR + 28]; e_phoff
 add ebx, KERNAL_BASE_ADDR
 mov cx,  [KERNAL_BASE_ADDR + 44]; e_phnum, cx作为loop数使用

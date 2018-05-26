@@ -35,7 +35,7 @@ int 0x13;
 
 ;-------------------------------------------读取内核,从磁盘第 10扇区0磁道0柱面 开始,读取10个扇区,将内核读取到缓冲器
 mov ah, 0x02; 功能号
-mov al, 0x0a; 读取扇区数
+mov al, 0x20; 读取扇区数
 mov ch, 0x00; 磁道号低8位
 mov cl, 0x0a; 0-5 起始扇区号,6-7磁道号高2位
 mov dh, 0x00; 磁头号
@@ -46,6 +46,6 @@ int 0x13;
 
 jmp 0x9000
 
-message db "start mbr ld kernal!"
+message db "start mbr ld kernal2!"
 endmessahe times 510 - ($-$$) db 0;
 db 0x55, 0xaa;

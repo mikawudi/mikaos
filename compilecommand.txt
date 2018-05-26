@@ -6,3 +6,7 @@ nasm -f elf ./kernel/interruption.s -o ./kernel/interruption.bin
 nasm -f elf ./kernel/print.s -o ./kernel/print.o
 gcc -c -fno-builtin -m32 -o ./kernel/test.bin ./kernel/main.c
 ld -Ttext 0xc0001500 -m elf_i386 -e main -o ./kernel/kernel.bin ./kernel/test.bin ./kernel/print.o ./kernel/interruption.bin
+
+readelf -e ./kernel/kernel.bin
+
+objdump -D --disassemble-zeroes -j .data ./kernel/kernel.bin

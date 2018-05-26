@@ -1,7 +1,7 @@
 #include "print.h"
 #define IDT_DEST_COUNT 0x21
 #define SELECTOR_CODE (0x0001<<3)
-#define IDT_DESC_ATTR_DPL0 ((0x01 << 7) + (0x00 << 5) + 0x0e)
+#define IDT_DESC_ATTR_DPL0 ((1 << 7) + (0 << 5) + 0xe)
 struct gate_desc{
     uint16_t func_offset_low_word;
     uint16_t selector;
@@ -49,8 +49,11 @@ static void make_idt_desc(struct gate_desc* p_gdesc, uint8_t attr, void* func) {
 static void idt_desc_init(void){
     int i;
     for(i = 0; i < IDT_DEST_COUNT; i++){
-        make_idt_desc(&idt[i], IDT_DESC_ATTR_DPL0, &func_table[i]);
+        void* funadr = func_table[i];
+        make_idt_desc(&idt[i], IDT_DESC_ATTR_DPL0, funadr);
     }
+    //idt[0].func_offset_low_word = 0x1790;
+    //idt[0].func_offset_high_word = 0xc000;
     printstr("idt_desc_init_done!\n");
 }
 
